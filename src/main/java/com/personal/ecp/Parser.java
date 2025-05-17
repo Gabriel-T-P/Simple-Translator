@@ -10,7 +10,7 @@ public class Parser {
   }
 
   public void parse() {
-    letStatement();
+    statements();
   }
 
   private void nextToken() {
@@ -25,6 +25,23 @@ public class Parser {
     }
   }
 
+  void statements() {
+
+    while (currentToken.type != TokenType.EOF) {
+      statement();
+    }
+  }
+
+  void statement() {
+    if (currentToken.type == TokenType.PRINT) {
+      printStatement();
+    } else if (currentToken.type == TokenType.LET) {
+      letStatement();
+    } else {
+      throw new Error("syntax error");
+    }
+  }
+
   void letStatement() {
     match(TokenType.LET);
     var id = currentToken.lexeme;
@@ -32,6 +49,13 @@ public class Parser {
     match(TokenType.EQ);
     expr();
     System.out.println("pop " + id);
+    match(TokenType.SEMICOLON);
+  }
+
+  void printStatement() {
+    match(TokenType.PRINT);
+    expr();
+    System.out.println("print");
     match(TokenType.SEMICOLON);
   }
 
